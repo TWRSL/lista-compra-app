@@ -4,27 +4,28 @@ App web progresiva para gestionar la lista de la compra compartida entre miembr
 
 ## Supermercados
 
-- Mercadona
-
-- Ahorramás
-
-- ALDI
-
-- (ampliable: Carrefour, Alcampo...)
+* Mercadona
+* Ahorramás
+* ALDI
+* (ampliable: Carrefour, Alcampo...)
 
 ## Tecnología
 
-- HTML + CSS + JavaScript (sin frameworks)
+* Frontend: HTML + CSS + JavaScript (un solo archivo)
+* Base de datos y auth: Supabase
+* Hosting: GitHub Pages)
 
-- Firebase (base de datos en tiempo real + autenticación)
+## Funcionalidades
 
-- GitHub Pages (publicación gratuita)
+\- Lista compartida en tiempo real
 
-## Flujo de un producto
+\- Tabs por supermercado
 
-FALTA → ASIGNADO a supermercado → COMPRADO (se archiva)
+\- Estados: Falta → Asignado → Comprado
+
+\- Acceso por invitación del admin
 
 ## Estado del proyecto
 
-🚧 En construcción
+🚧 En desarrollo activo
 
