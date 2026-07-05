@@ -1,1 +1,0 @@
-// Configuración Firebase — se completará en el Bloque 2

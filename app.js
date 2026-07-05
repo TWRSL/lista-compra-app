@@ -1,1 +1,0 @@
-// Lógica de la app — en construcción
