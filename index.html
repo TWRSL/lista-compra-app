@@ -1205,31 +1205,30 @@ async function addToActive(id) {
   const prod = catalog.find(p => p.id === id);
   if (!prod) return;
 
+  // Actualización local INMEDIATA (antes de la llamada a la BD)
+  catalog = catalog.filter(p => p.id !== id);
+  activeList.push({ ...prod, estado: 'Falta' });
+  updateCounts();
+  renderActive();
+  renderCatalog();
+  toast(`✓ ${prod.nombre} añadido`);
+
   const { error } = await db
     .from('productos')
     .update({ estado: 'Falta' })
     .eq('id', id);
 
-  if (error) { toast('Error al añadir ❌'); return; }
-
-  toast(`✓ ${prod.nombre} añadido`);
-
-  // Move from catalog → active list
-  catalog = catalog.filter(p => p.id !== id);
-  activeList.push({ ...prod, estado: 'Falta' });
-  refreshCounts();
-  renderActive();
-  renderCatalog();
+  if (error) {
+    // Rollback si falla la BD
+    toast('Error al añadir ❌');
+    catalog.push(prod);
+    const idx = activeList.findIndex(p => p.id === id);
+    if (idx !== -1) activeList.splice(idx, 1);
+    updateCounts();
+    renderActive();
+    renderCatalog();
+  }
 }
-
-function refreshCatalog() {
-  // Called from realtime to keep catalog in sync
-  if (catalog.length === 0) return;
-  const activeIds = new Set(activeList.map(p => p.id));
-  catalog = catalog.filter(p => !activeIds.has(p.id));
-  renderCatalog();
-}
-
 
 // ════════════════════════════════════════════
 //  TOAST
