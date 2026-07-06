@@ -1002,7 +1002,7 @@ async function buyProduct(id, prod) {
   setTimeout(async () => {
     const { error } = await db
       .from('productos')
-      .update({ estado: 'Comprado', comprado_en: new Date().toISOString() })
+      .update({ estado: 'Hay', comprado_en: new Date().toISOString() })
       .eq('id', id);
 
     if (error) { toast('Error al guardar ❌'); renderActive(); return; }
@@ -1013,7 +1013,6 @@ async function buyProduct(id, prod) {
     renderActive();
   }, 290);
 }
-
 
 // ════════════════════════════════════════════
 //  REALTIME
