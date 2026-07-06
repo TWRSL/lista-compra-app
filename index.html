@@ -612,7 +612,28 @@
     }
     .btn-add:active { opacity: .7; }
 
+    // ── CICLO DE SUPERMERCADO ─────────────────
+    async function cycleSupermarket(id) {
+      const cycle = ['Mercadona', 'Ahorramás', 'ALDI'];
+      const prod  = activeList.find(p => p.id === id);
+      if (!prod) return;
 
+      const currentIdx = cycle.indexOf(prod.supermercado);
+      const nextSuper  = cycle[(currentIdx + 1) % cycle.length];
+
+      const { error } = await db
+         .from('productos')
+         .update({ supermercado: nextSuper })
+         .eq('id', id);
+
+      if (error) { toast('Error al cambiar ❌'); return; }
+
+      activeList[activeList.findIndex(p => p.id === id)].supermercado = nextSuper;
+      refreshCounts();
+      renderActive();
+      toast(`Cambiado a ${nextSuper}`);
+    }
+	
     /* ───────────────────────────────────────────────
        TOAST
     ─────────────────────────────────────────────── */
@@ -939,7 +960,10 @@ function cardHTML(p) {
         <div class="card-name">${p.nombre}</div>
         <div class="card-meta">
           <span class="super-dot"></span>
-          <span>${p.supermercado || '—'}${p.categoria ? ' · ' + p.categoria : ''}</span>
+          <span class="super-label" data-action="change-super" data-id="${p.id}"
+      		style="text-decoration:underline; text-decoration-style:dotted; cursor:pointer;">
+  		${p.supermercado || '—'}
+	  </span>${p.categoria ? ' · ' + p.categoria : ''}
           ${qty}
         </div>
         ${note}
@@ -956,6 +980,12 @@ function bindCardEvents() {
   qa('[data-action]', appContent).forEach(el => {
     el.addEventListener('click', handleCard);
   });
+qa('[data-action="change-super"]', appContent).forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    cycleSupermarket(Number(el.dataset.id));
+  });
+});
 }
 
 async function handleCard(e) {
