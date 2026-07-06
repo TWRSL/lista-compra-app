@@ -1207,7 +1207,7 @@ async function addToActive(id) {
   // Actualización local INMEDIATA (antes de la llamada a la BD)
   catalog = catalog.filter(p => p.id !== id);
   activeList.push({ ...prod, estado: 'Falta' });
-  updateCounts();
+  refreshCounts();
   renderActive();
   renderCatalog();
   toast(`✓ ${prod.nombre} añadido`);
@@ -1223,7 +1223,7 @@ async function addToActive(id) {
     catalog.push(prod);
     const idx = activeList.findIndex(p => p.id === id);
     if (idx !== -1) activeList.splice(idx, 1);
-    updateCounts();
+    refreshCounts();
     renderActive();
     renderCatalog();
   }
