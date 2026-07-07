@@ -8,47 +8,30 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Lista Familia 🛒</title>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Supabase JS v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* ───────────────────────────────────────────────
-       RESET & TOKENS
-    ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Surfaces */
       --bg:          #F1F5F9;
       --surface:     #FFFFFF;
       --header-bg:   #0F172A;
       --card-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
-
-      /* Text */
       --text-1: #1E293B;
       --text-2: #64748B;
       --border: #E2E8F0;
-
-      /* Supermarkets */
       --mercadona: #16A34A;
       --ahoramas:  #DC2626;
       --aldi:      #1D4ED8;
       --todos:     #7C3AED;
-
-      /* States */
       --falta:    #EF4444;
       --asignado: #F59E0B;
-
-      /* Brand green */
       --green:    #22C55E;
       --green-bg: #DCFCE7;
       --green-fg: #15803D;
-
-      /* Layout */
       --header-h: 58px;
       --tabs-h:   50px;
     }
@@ -60,13 +43,9 @@
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
     }
-
     .hidden { display: none !important; }
 
-
-    /* ───────────────────────────────────────────────
-       LOGIN
-    ─────────────────────────────────────────────── */
+    /* LOGIN */
     #login-screen {
       display: flex;
       flex-direction: column;
@@ -76,601 +55,313 @@
       padding: 24px;
       background: var(--header-bg);
     }
-
     .login-emoji   { font-size: 52px; margin-bottom: 6px; }
     .login-title   { color: #F1F5F9; font-size: 26px; font-weight: 700; }
     .login-sub     { color: #64748B; font-size: 13px; margin-bottom: 36px; }
-
     .login-card {
-      width: 100%;
-      max-width: 360px;
+      width: 100%; max-width: 360px;
       background: #1E293B;
       border: 1px solid #334155;
       border-radius: 20px;
       padding: 28px 22px;
     }
-
     .field { margin-bottom: 14px; }
     .field label {
       display: block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: #94A3B8;
-      margin-bottom: 6px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: #94A3B8; margin-bottom: 6px;
     }
     .field input {
-      width: 100%;
-      padding: 13px 14px;
+      width: 100%; padding: 13px 14px;
       background: #0F172A;
       border: 1.5px solid #334155;
       border-radius: 11px;
-      color: #F1F5F9;
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .2s;
+      color: #F1F5F9; font-size: 16px; font-family: inherit;
+      outline: none; transition: border-color .2s;
     }
     .field input:focus { border-color: var(--green); }
-
     .btn-login {
-      width: 100%;
-      margin-top: 6px;
-      padding: 15px;
-      background: var(--green);
-      color: #0F172A;
-      font-size: 15px;
-      font-weight: 700;
-      font-family: inherit;
-      border: none;
-      border-radius: 11px;
-      cursor: pointer;
+      width: 100%; margin-top: 6px; padding: 15px;
+      background: var(--green); color: #0F172A;
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      border: none; border-radius: 11px; cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: opacity .15s;
     }
     .btn-login:active { opacity: .8; }
     .btn-login:disabled { opacity: .5; cursor: default; }
-
     .login-err {
-      min-height: 18px;
-      margin-top: 10px;
-      font-size: 13px;
-      color: #FCA5A5;
-      text-align: center;
+      min-height: 18px; margin-top: 10px;
+      font-size: 13px; color: #FCA5A5; text-align: center;
     }
 
+    /* APP SHELL */
+    #app-screen { display: flex; flex-direction: column; min-height: 100dvh; }
 
-    /* ───────────────────────────────────────────────
-       APP SHELL
-    ─────────────────────────────────────────────── */
-    #app-screen {
-      display: flex;
-      flex-direction: column;
-      min-height: 100dvh;
-    }
-
-    /* Header */
     .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: var(--header-h);
-      background: var(--header-bg);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      height: var(--header-h); background: var(--header-bg);
+      display: flex; align-items: center; justify-content: space-between;
       padding: 0 16px;
       box-shadow: 0 2px 10px rgba(0,0,0,.25);
     }
-
     .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 18px;
-      font-weight: 700;
-      color: #F1F5F9;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 18px; font-weight: 700; color: #F1F5F9;
     }
     .header-brand span { font-size: 22px; }
-
     .btn-logout {
-      background: transparent;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 6px 12px;
-      color: #94A3B8;
-      font-size: 12px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
+      background: transparent; border: 1px solid #334155;
+      border-radius: 8px; padding: 6px 12px;
+      color: #94A3B8; font-size: 12px; font-weight: 500;
+      font-family: inherit; cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
     .btn-logout:active { background: #1E293B; }
 
-    /* Tabs */
+    /* TABS */
     .tabs-bar {
-      position: sticky;
-      top: var(--header-h);
-      z-index: 99;
-      height: var(--tabs-h);
-      background: var(--header-bg);
+      position: sticky; top: var(--header-h); z-index: 99;
+      height: var(--tabs-h); background: var(--header-bg);
       border-bottom: 1px solid #1E293B;
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
+      display: flex; overflow-x: auto; scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
     .tabs-bar::-webkit-scrollbar { display: none; }
-
     .tab {
-      flex: 1;
-      min-width: 72px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      color: #475569;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .02em;
-      text-transform: uppercase;
-      border: none;
-      background: transparent;
-      font-family: inherit;
-      cursor: pointer;
-      position: relative;
-      -webkit-tap-highlight-color: transparent;
-      transition: color .15s;
+      flex: 1; min-width: 72px; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      color: #475569; font-size: 10px; font-weight: 600;
+      letter-spacing: .02em; text-transform: uppercase;
+      border: none; background: transparent; font-family: inherit;
+      cursor: pointer; position: relative;
+      -webkit-tap-highlight-color: transparent; transition: color .15s;
     }
-
     .tab-emoji { font-size: 14px; line-height: 1; }
-
     .tab::after {
-      content: '';
-      position: absolute;
+      content: ''; position: absolute;
       bottom: 0; left: 10px; right: 10px;
-      height: 2px;
-      border-radius: 2px 2px 0 0;
-      background: transparent;
-      transition: background .15s;
+      height: 2px; border-radius: 2px 2px 0 0;
+      background: transparent; transition: background .15s;
     }
-
     .tab.active { color: #E2E8F0; }
     .tab[data-t="todos"].active::after    { background: var(--todos); }
     .tab[data-t="Mercadona"].active::after { background: var(--mercadona); }
-    .tab[data-t="Ahorramás"].active::after  { background: var(--ahoramas); }
+    .tab[data-t="Ahorramás"].active::after { background: var(--ahoramas); }
     .tab[data-t="ALDI"].active::after     { background: var(--aldi); }
-
     .tab-badge {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 10px;
-      background: #1E293B;
-      color: #64748B;
-      min-width: 16px;
-      text-align: center;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 5px; border-radius: 10px;
+      background: #1E293B; color: #64748B;
+      min-width: 16px; text-align: center;
       transition: background .15s, color .15s;
     }
-    .tab.active .tab-badge {
-      background: var(--green);
-      color: #052e16;
-    }
+    .tab.active .tab-badge { background: var(--green); color: #052e16; }
 
-    /* Content area */
-    .app-content {
-      flex: 1;
-      padding: 10px 10px 90px;
-    }
-
-    /* Section label */
+    /* CONTENT */
+    .app-content { flex: 1; padding: 10px 10px 90px; }
     .section-lbl {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      color: var(--text-2);
-      padding: 12px 4px 5px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase;
+      color: var(--text-2); padding: 12px 4px 5px;
     }
 
-    /* Product card */
+    /* PRODUCT CARD */
     .product-card {
-      background: var(--surface);
-      border-radius: 13px;
-      margin-bottom: 7px;
-      display: flex;
-      align-items: stretch;
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
+      background: var(--surface); border-radius: 13px;
+      margin-bottom: 7px; display: flex; align-items: stretch;
+      overflow: hidden; box-shadow: var(--card-shadow);
       transition: opacity .28s ease, transform .28s ease;
     }
     .product-card.removing {
-      opacity: 0;
-      transform: translateX(70px);
-      pointer-events: none;
+      opacity: 0; transform: translateX(70px); pointer-events: none;
     }
-
-    /* Left accent stripe by supermarket */
     .product-card[data-super="Mercadona"] { border-left: 3px solid var(--mercadona); }
     .product-card[data-super="Ahorramás"]  { border-left: 3px solid var(--ahoramas); }
     .product-card[data-super="ALDI"]      { border-left: 3px solid var(--aldi); }
 
-    /* Card body — tap to toggle FALTA↔ASIGNADO */
     .card-body {
-      flex: 1;
-      padding: 12px 10px;
-      cursor: pointer;
-      min-width: 0;
+      flex: 1; padding: 12px 10px; cursor: pointer; min-width: 0;
       -webkit-tap-highlight-color: transparent;
     }
     .card-body:active { background: #F8FAFC; }
-
     .card-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-1);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 14px; font-weight: 600; color: var(--text-1);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       margin-bottom: 3px;
     }
-
     .card-meta {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 5px;
-      font-size: 11px;
-      color: var(--text-2);
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 5px; font-size: 11px; color: var(--text-2);
     }
-
     .super-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
+      display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; flex-shrink: 0;
     }
     [data-super="Mercadona"] .super-dot { background: var(--mercadona); }
     [data-super="Ahorramás"]  .super-dot { background: var(--ahoramas); }
     [data-super="ALDI"]      .super-dot { background: var(--aldi); }
-
     .qty-chip {
-      background: #F1F5F9;
-      border-radius: 5px;
-      padding: 1px 5px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-2);
+      background: #F1F5F9; border-radius: 5px;
+      padding: 1px 5px; font-size: 10px; font-weight: 600; color: var(--text-2);
     }
+    .card-notes { font-size: 11px; color: #94A3B8; font-style: italic; margin-top: 3px; }
 
-    .card-notes {
-      font-size: 11px;
-      color: #94A3B8;
-      font-style: italic;
-      margin-top: 3px;
-    }
-
-    /* State pill — tap to toggle */
     .state-pill {
-      align-self: center;
-      flex-shrink: 0;
-      margin: 0 5px;
-      padding: 5px 9px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      -webkit-tap-highlight-color: transparent;
-      transition: opacity .12s;
-      white-space: nowrap;
+      align-self: center; flex-shrink: 0; margin: 0 5px;
+      padding: 5px 9px; border-radius: 7px;
+      font-size: 11px; font-weight: 600; border: none; cursor: pointer;
+      font-family: inherit; -webkit-tap-highlight-color: transparent;
+      transition: opacity .12s; white-space: nowrap;
     }
     .state-pill:active { opacity: .65; }
     .state-pill.falta    { background: #FEE2E2; color: #B91C1C; }
     .state-pill.asignado { background: #FEF9C3; color: #854D0E; }
 
-    /* Check button — marks COMPRADO */
     .check-btn {
-      flex-shrink: 0;
-      width: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: none;
+      flex-shrink: 0; width: 52px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none;
       border-left: 1px solid var(--border);
-      color: #CBD5E1;
-      font-size: 20px;
-      cursor: pointer;
+      color: #CBD5E1; font-size: 20px; cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: color .15s, background .15s;
     }
-    .check-btn:active {
-      color: var(--green);
-      background: var(--green-bg);
-    }
+    .check-btn:active { color: var(--green); background: var(--green-bg); }
 
-    /* Empty state */
+    /* EMPTY & LOADING */
     .empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 60px 24px;
-      color: var(--text-2);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 60px 24px; color: var(--text-2);
     }
     .empty-icon { font-size: 44px; margin-bottom: 10px; opacity: .55; }
     .empty h3   { font-size: 15px; font-weight: 600; color: var(--text-1); margin-bottom: 5px; }
     .empty p    { font-size: 13px; line-height: 1.5; }
-
-    /* Loading spinner */
     .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 50px 24px;
-      color: var(--text-2);
-      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 50px 24px; color: var(--text-2); font-size: 14px;
     }
     .spinner {
       width: 18px; height: 18px;
-      border: 2px solid var(--border);
-      border-top-color: var(--green);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      flex-shrink: 0;
+      border: 2px solid var(--border); border-top-color: var(--green);
+      border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* FAB */
     .fab {
-      position: fixed;
-      bottom: 22px; right: 18px;
+      position: fixed; bottom: 22px; right: 18px;
       width: 56px; height: 56px;
-      background: var(--green);
-      color: #0F172A;
-      border: none;
-      border-radius: 50%;
-      font-size: 30px;
-      font-weight: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(34,197,94,.45);
-      z-index: 50;
-      -webkit-tap-highlight-color: transparent;
+      background: var(--green); color: #0F172A;
+      border: none; border-radius: 50%;
+      font-size: 30px; font-weight: 300;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(34,197,94,.45);
+      z-index: 50; -webkit-tap-highlight-color: transparent;
       transition: transform .15s, box-shadow .15s;
     }
-    .fab:active {
-      transform: scale(.9);
-      box-shadow: 0 2px 8px rgba(34,197,94,.4);
-    }
+    .fab:active { transform: scale(.9); box-shadow: 0 2px 8px rgba(34,197,94,.4); }
 
-
-    /* ───────────────────────────────────────────────
-       BOTTOM SHEET — Add products
-    ─────────────────────────────────────────────── */
+    /* BOTTOM SHEET */
     .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.48);
-      z-index: 200;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s;
+      position: fixed; inset: 0; background: rgba(0,0,0,.48);
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity .25s;
     }
     .overlay.open { opacity: 1; pointer-events: all; }
-
     .sheet {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--surface);
-      border-radius: 22px 22px 0 0;
-      z-index: 201;
-      max-height: 88dvh;
-      display: flex;
-      flex-direction: column;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); border-radius: 22px 22px 0 0;
+      z-index: 201; max-height: 88dvh;
+      display: flex; flex-direction: column;
       transform: translateY(100%);
       transition: transform .3s cubic-bezier(.32,.72,0,1);
     }
     .sheet.open { transform: translateY(0); }
-
     .sheet-handle {
-      width: 36px; height: 4px;
-      background: #CBD5E1;
-      border-radius: 2px;
-      margin: 12px auto 0;
-      flex-shrink: 0;
+      width: 36px; height: 4px; background: #CBD5E1;
+      border-radius: 2px; margin: 12px auto 0; flex-shrink: 0;
     }
-
-    .sheet-top {
-      padding: 14px 18px 10px;
-      flex-shrink: 0;
-    }
-    .sheet-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-1);
-      margin-bottom: 11px;
-    }
-
+    .sheet-top { padding: 14px 18px 10px; flex-shrink: 0; }
+    .sheet-title { font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 11px; }
     .search-box {
-      width: 100%;
-      padding: 11px 14px;
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: 11px;
-      font-size: 15px;
-      font-family: inherit;
-      color: var(--text-1);
-      outline: none;
-      transition: border-color .2s;
+      width: 100%; padding: 11px 14px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 11px; font-size: 15px; font-family: inherit;
+      color: var(--text-1); outline: none; transition: border-color .2s;
     }
     .search-box::placeholder { color: #94A3B8; }
     .search-box:focus { border-color: var(--green); }
-
-    /* Sheet filter chips */
     .sheet-chips {
-      display: flex;
-      gap: 7px;
-      padding: 8px 18px 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      flex-shrink: 0;
+      display: flex; gap: 7px; padding: 8px 18px 10px;
+      overflow-x: auto; scrollbar-width: none; flex-shrink: 0;
     }
     .sheet-chips::-webkit-scrollbar { display: none; }
-
     .chip {
-      flex-shrink: 0;
-      padding: 5px 13px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1.5px solid var(--border);
-      background: transparent;
-      color: var(--text-2);
-      cursor: pointer;
-      font-family: inherit;
-      -webkit-tap-highlight-color: transparent;
-      transition: all .15s;
+      flex-shrink: 0; padding: 5px 13px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      border: 1.5px solid var(--border); background: transparent;
+      color: var(--text-2); cursor: pointer; font-family: inherit;
+      -webkit-tap-highlight-color: transparent; transition: all .15s;
     }
-    .chip.active {
-      background: var(--text-1);
-      border-color: var(--text-1);
-      color: #F8FAFC;
-    }
-
-    /* Sheet product list */
+    .chip.active { background: var(--text-1); border-color: var(--text-1); color: #F8FAFC; }
     .sheet-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 10px 24px;
+      flex: 1; overflow-y: auto; padding: 0 10px 24px;
       -webkit-overflow-scrolling: touch;
     }
-
     .sheet-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 6px;
-      border-bottom: 1px solid #F1F5F9;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      border-radius: 8px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 6px; border-bottom: 1px solid #F1F5F9;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 8px;
     }
     .sheet-item:last-child { border-bottom: none; }
     .sheet-item:active { background: #F8FAFC; }
-
     .sheet-item-icon {
-      width: 34px; height: 34px;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
     }
     .icon-mercadona { background: #DCFCE7; }
     .icon-ahoramas  { background: #FEE2E2; }
     .icon-aldi      { background: #DBEAFE; }
     .icon-other     { background: #F1F5F9; }
-
     .sheet-item-info { flex: 1; min-width: 0; }
     .sheet-item-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-1);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 13px; font-weight: 600; color: var(--text-1);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .sheet-item-sub {
-      font-size: 11px;
-      color: var(--text-2);
-      margin-top: 1px;
-    }
-
+    .sheet-item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
     .btn-add {
-      flex-shrink: 0;
-      padding: 6px 12px;
-      background: var(--green-bg);
-      color: var(--green-fg);
-      border: none;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0; padding: 6px 12px;
+      background: var(--green-bg); color: var(--green-fg);
+      border: none; border-radius: 7px;
+      font-size: 12px; font-weight: 700; font-family: inherit;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
     }
     .btn-add:active { opacity: .7; }
 
-    // ── CICLO DE SUPERMERCADO ─────────────────
-    async function cycleSupermarket(id) {
-      const cycle = ['Mercadona', 'Ahorramás', 'ALDI'];
-      const prod  = activeList.find(p => p.id === id);
-      if (!prod) return;
-
-      const currentIdx = cycle.indexOf(prod.supermercado);
-      const nextSuper  = cycle[(currentIdx + 1) % cycle.length];
-
-      const { error } = await db
-         .from('productos')
-         .update({ supermercado: nextSuper })
-         .eq('id', id);
-
-      if (error) { toast('Error al cambiar ❌'); return; }
-
-      activeList[activeList.findIndex(p => p.id === id)].supermercado = nextSuper;
-      refreshCounts();
-      renderActive();
-      toast(`Cambiado a ${nextSuper}`);
-    }
-	
-    /* ───────────────────────────────────────────────
-       TOAST
-    ─────────────────────────────────────────────── */
+    /* TOAST */
     .toast {
-      position: fixed;
-      bottom: 88px;
-      left: 50%;
+      position: fixed; bottom: 88px; left: 50%;
       transform: translateX(-50%) translateY(16px);
-      background: #1E293B;
-      color: #F1F5F9;
-      padding: 9px 18px;
-      border-radius: 11px;
-      font-size: 13px;
-      font-weight: 500;
-      z-index: 400;
-      opacity: 0;
-      pointer-events: none;
-      white-space: nowrap;
-      box-shadow: 0 4px 14px rgba(0,0,0,.22);
+      background: #1E293B; color: #F1F5F9;
+      padding: 9px 18px; border-radius: 11px;
+      font-size: 13px; font-weight: 500;
+      z-index: 400; opacity: 0; pointer-events: none;
+      white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.22);
       transition: opacity .2s, transform .2s;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     LOGIN SCREEN
-════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-emoji">🛒</div>
   <div class="login-title">Lista Familia</div>
   <div class="login-sub">Tu lista de la compra compartida</div>
-
   <div class="login-card">
     <div class="field">
       <label>Email</label>
@@ -687,115 +378,72 @@
   </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════
-     APP SCREEN
-════════════════════════════════════════════ -->
 <div id="app-screen" class="hidden">
-
-  <!-- Header -->
   <header class="app-header">
-    <div class="header-brand">
-      <span>🛒</span>Lista Familia
-    </div>
+    <div class="header-brand"><span>🛒</span>Lista Familia</div>
     <button id="btn-logout" class="btn-logout">Salir</button>
   </header>
-
-  <!-- Tabs -->
   <nav class="tabs-bar">
     <button class="tab active" data-t="todos">
-      <span class="tab-emoji">🧺</span>
-      <span>Todos</span>
+      <span class="tab-emoji">🧺</span><span>Todos</span>
       <span class="tab-badge" id="cnt-todos">0</span>
     </button>
     <button class="tab" data-t="Mercadona">
-      <span class="tab-emoji">🟢</span>
-      <span>Mercadona</span>
+      <span class="tab-emoji">🟢</span><span>Mercadona</span>
       <span class="tab-badge" id="cnt-merca">0</span>
     </button>
     <button class="tab" data-t="Ahorramás">
-      <span class="tab-emoji">🔴</span>
-      <span>Ahorramás</span>
+      <span class="tab-emoji">🔴</span><span>Ahorramás</span>
       <span class="tab-badge" id="cnt-ahorra">0</span>
     </button>
     <button class="tab" data-t="ALDI">
-      <span class="tab-emoji">🔵</span>
-      <span>ALDI</span>
+      <span class="tab-emoji">🔵</span><span>ALDI</span>
       <span class="tab-badge" id="cnt-aldi">0</span>
     </button>
   </nav>
-
-  <!-- Product list -->
   <main class="app-content" id="app-content">
     <div class="loading"><div class="spinner"></div>Cargando…</div>
   </main>
-
-  <!-- FAB: open add-sheet -->
   <button class="fab" id="fab" aria-label="Añadir a la lista">+</button>
 </div>
 
-
-<!-- Overlay backdrop -->
 <div class="overlay" id="overlay"></div>
 
-
-<!-- ═══════════════════════════════════════════
-     BOTTOM SHEET — Añadir producto
-════════════════════════════════════════════ -->
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
-
   <div class="sheet-top">
     <div class="sheet-title">Añadir a la lista</div>
     <input class="search-box" id="search" type="search"
            placeholder="Buscar producto…" autocomplete="off">
   </div>
-
   <div class="sheet-chips">
     <button class="chip active" data-f="todos">Todos</button>
     <button class="chip" data-f="Mercadona">Mercadona</button>
     <button class="chip" data-f="Ahorramás">Ahorramás</button>
     <button class="chip" data-f="ALDI">ALDI</button>
   </div>
-
   <div class="sheet-list" id="sheet-list"></div>
 </div>
 
-
-<!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
-
-<!-- ═══════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-// ╔══════════════════════════════════════════╗
-// ║  CONFIGURACIÓN SUPABASE                  ║
-// ║  1. Ve a tu proyecto en supabase.com     ║
-// ║  2. Project Settings → API               ║
-// ║  3. Copia "Project URL" y "anon public"  ║
-// ║     y pégalos abajo (entre comillas)     ║
-// ╚══════════════════════════════════════════╝
 const SUPABASE_URL      = 'https://psamvwjpnvfdajkkeqyo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzYW12d2pwbnZmZGFqa2tlcXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDE4NTUsImV4cCI6MjA5NzIxNzg1NX0.LH4KcO-8KfknHFbPpw3b78TGemc397l4RIr3nX82U6o';
 
-// ─── Init Supabase client ───────────────────
 const { createClient } = window.supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ─── App state ──────────────────────────────
-let activeTab    = 'todos';   // current tab filter
-let sheetFilter  = 'todos';   // filter inside the bottom sheet
-let sheetQuery   = '';        // search query inside the sheet
-let activeList   = [];        // products with estado Falta|Asignado
-let catalog      = [];        // products with estado Hay (for the sheet)
-let realtimeCh   = null;
-let searchTimer  = null;
+let activeTab   = 'todos';
+let sheetFilter = 'todos';
+let sheetQuery  = '';
+let activeList  = [];
+let catalog     = [];
+let realtimeCh  = null;
+let searchTimer = null;
 
-// ─── DOM shortcuts ──────────────────────────
 const $  = id => document.getElementById(id);
 const qs = (sel, root = document) => root.querySelector(sel);
 const qa = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -809,21 +457,14 @@ const sheetList   = $('sheet-list');
 const searchEl    = $('search');
 const toastEl     = $('toast');
 
-
-// ════════════════════════════════════════════
-//  BOOTSTRAP
-// ════════════════════════════════════════════
+// BOOTSTRAP
 (async () => {
   const { data: { session } } = await db.auth.getSession();
   session ? enterApp() : enterLogin();
-
   db.auth.onAuthStateChange((_e, sess) => sess ? enterApp() : enterLogin());
 })();
 
-
-// ════════════════════════════════════════════
-//  AUTH
-// ════════════════════════════════════════════
+// AUTH
 $('btn-login').addEventListener('click', doLogin);
 $('l-pass').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
 $('l-email').addEventListener('keydown', e => e.key === 'Enter' && $('l-pass').focus());
@@ -833,19 +474,12 @@ async function doLogin() {
   const pass  = $('l-pass').value;
   const err   = $('l-err');
   const btn   = $('btn-login');
-
   if (!email || !pass) { err.textContent = 'Rellena email y contraseña.'; return; }
-
-  btn.disabled    = true;
-  btn.textContent = 'Entrando…';
-  err.textContent = '';
-
+  btn.disabled = true; btn.textContent = 'Entrando…'; err.textContent = '';
   const { error } = await db.auth.signInWithPassword({ email, password: pass });
-
   if (error) {
-    err.textContent    = 'Email o contraseña incorrectos.';
-    btn.disabled       = false;
-    btn.textContent    = 'Entrar';
+    err.textContent = 'Email o contraseña incorrectos.';
+    btn.disabled = false; btn.textContent = 'Entrar';
   }
 }
 
@@ -857,11 +491,9 @@ $('btn-logout').addEventListener('click', async () => {
 function enterLogin() {
   appScreen.classList.add('hidden');
   loginScreen.classList.remove('hidden');
-  $('l-email').value  = '';
-  $('l-pass').value   = '';
+  $('l-email').value = ''; $('l-pass').value = '';
   $('l-err').textContent = '';
-  $('btn-login').disabled    = false;
-  $('btn-login').textContent = 'Entrar';
+  $('btn-login').disabled = false; $('btn-login').textContent = 'Entrar';
 }
 
 async function enterApp() {
@@ -871,77 +503,49 @@ async function enterApp() {
   setupRealtime();
 }
 
-
-// ════════════════════════════════════════════
-//  DATA — active list (Falta + Asignado)
-// ════════════════════════════════════════════
+// DATA
 async function loadActive() {
   appContent.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando lista…</div>';
-
   const { data, error } = await db
     .from('productos')
     .select('*')
     .in('estado', ['Falta', 'Asignado'])
     .order('nombre');
-
   if (error) {
-    appContent.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">⚠️</div>
-        <h3>Error de conexión</h3>
-        <p>Comprueba tu conexión<br>e intenta de nuevo.</p>
-      </div>`;
+    appContent.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+      <h3>Error de conexión</h3><p>Comprueba tu conexión<br>e intenta de nuevo.</p></div>`;
     return;
   }
-
   activeList = data || [];
   refreshCounts();
   renderActive();
 }
 
 function refreshCounts() {
-  const total  = activeList.length;
-  const merca  = activeList.filter(p => p.supermercado === 'Mercadona').length;
-  const ahorra = activeList.filter(p => p.supermercado === 'Ahorramás').length;
-  const aldi   = activeList.filter(p => p.supermercado === 'ALDI').length;
-
-  $('cnt-todos').textContent  = total;
-  $('cnt-merca').textContent  = merca;
-  $('cnt-ahorra').textContent = ahorra;
-  $('cnt-aldi').textContent   = aldi;
+  $('cnt-todos').textContent  = activeList.length;
+  $('cnt-merca').textContent  = activeList.filter(p => p.supermercado === 'Mercadona').length;
+  $('cnt-ahorra').textContent = activeList.filter(p => p.supermercado === 'Ahorramás').length;
+  $('cnt-aldi').textContent   = activeList.filter(p => p.supermercado === 'ALDI').length;
 }
 
 function renderActive() {
-  // Filter by active tab
   const view = activeTab === 'todos'
     ? activeList
     : activeList.filter(p => p.supermercado === activeTab);
 
   if (view.length === 0) {
     const label = activeTab === 'todos' ? 'la lista' : activeTab;
-    appContent.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">✅</div>
-        <h3>Todo en orden</h3>
-        <p>No hay productos pendientes en ${label}.<br>
-           Pulsa <strong>+</strong> para añadir.</p>
-      </div>`;
+    appContent.innerHTML = `<div class="empty"><div class="empty-icon">✅</div>
+      <h3>Todo en orden</h3>
+      <p>No hay productos pendientes en ${label}.<br>Pulsa <strong>+</strong> para añadir.</p></div>`;
     return;
   }
 
   const falta    = view.filter(p => p.estado === 'Falta');
   const asignado = view.filter(p => p.estado === 'Asignado');
-
   let html = '';
-  if (falta.length) {
-    html += `<div class="section-lbl">🔴 Falta · ${falta.length}</div>`;
-    html += falta.map(cardHTML).join('');
-  }
-  if (asignado.length) {
-    html += `<div class="section-lbl">🟡 Asignado · ${asignado.length}</div>`;
-    html += asignado.map(cardHTML).join('');
-  }
-
+  if (falta.length)    html += `<div class="section-lbl">🔴 Falta · ${falta.length}</div>` + falta.map(cardHTML).join('');
+  if (asignado.length) html += `<div class="section-lbl">🟡 Asignado · ${asignado.length}</div>` + asignado.map(cardHTML).join('');
   appContent.innerHTML = html;
   bindCardEvents();
 }
@@ -949,11 +553,8 @@ function renderActive() {
 function cardHTML(p) {
   const stateClass = p.estado === 'Falta' ? 'falta' : 'asignado';
   const stateLabel = p.estado === 'Falta' ? '⚠️ Falta' : '🟡 Asig.';
-  const qty  = (p.cantidad && p.cantidad != 1)
-    ? `<span class="qty-chip">×${p.cantidad}</span>` : '';
-  const note = p.notas
-    ? `<div class="card-notes">${p.notas}</div>` : '';
-
+  const qty  = (p.cantidad && p.cantidad != 1) ? `<span class="qty-chip">×${p.cantidad}</span>` : '';
+  const note = p.notas ? `<div class="card-notes">${p.notas}</div>` : '';
   return `
     <div class="product-card" data-id="${p.id}" data-super="${p.supermercado || ''}">
       <div class="card-body" data-action="toggle" data-id="${p.id}">
@@ -961,18 +562,15 @@ function cardHTML(p) {
         <div class="card-meta">
           <span class="super-dot"></span>
           <span class="super-label" data-action="change-super" data-id="${p.id}"
-      		style="text-decoration:underline; text-decoration-style:dotted; cursor:pointer;">
-  		${p.supermercado || '—'}
-	  </span>${p.categoria ? ' · ' + p.categoria : ''}
+                style="text-decoration:underline;text-decoration-style:dotted;cursor:pointer;">
+            ${p.supermercado || '—'}
+          </span>${p.categoria ? ' · ' + p.categoria : ''}
           ${qty}
         </div>
         ${note}
       </div>
-      <button class="state-pill ${stateClass}"
-              data-action="toggle" data-id="${p.id}">${stateLabel}</button>
-      <button class="check-btn"
-              data-action="comprado" data-id="${p.id}"
-              title="Marcar comprado">✓</button>
+      <button class="state-pill ${stateClass}" data-action="toggle" data-id="${p.id}">${stateLabel}</button>
+      <button class="check-btn" data-action="comprado" data-id="${p.id}" title="Marcar comprado">✓</button>
     </div>`;
 }
 
@@ -980,12 +578,12 @@ function bindCardEvents() {
   qa('[data-action]', appContent).forEach(el => {
     el.addEventListener('click', handleCard);
   });
-qa('[data-action="change-super"]', appContent).forEach(el => {
-  el.addEventListener('click', e => {
-    e.stopPropagation();
-    cycleSupermarket(Number(el.dataset.id));
+  qa('[data-action="change-super"]', appContent).forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      cycleSupermarket(Number(el.dataset.id));
+    });
   });
-});
 }
 
 async function handleCard(e) {
@@ -993,50 +591,31 @@ async function handleCard(e) {
   const id     = Number(e.currentTarget.dataset.id);
   const prod   = activeList.find(p => p.id === id);
   if (!prod) return;
-
   if (action === 'toggle') {
-    // Cycle: Falta ↔ Asignado
     const next = prod.estado === 'Falta' ? 'Asignado' : 'Falta';
     await setEstado(id, next);
     toast(`${prod.nombre}: ${next}`);
   }
-
-  if (action === 'comprado') {
-    await buyProduct(id, prod);
-  }
+  if (action === 'comprado') await buyProduct(id, prod);
 }
 
 async function setEstado(id, estado) {
-  const { error } = await db
-    .from('productos')
-    .update({ estado })
-    .eq('id', id);
-
+  const { error } = await db.from('productos').update({ estado }).eq('id', id);
   if (error) { toast('Error al guardar ❌'); return; }
-
   const idx = activeList.findIndex(p => p.id === id);
-  if (idx !== -1) {
-    activeList[idx].estado = estado;
-    refreshCounts();
-    renderActive();
-  }
+  if (idx !== -1) { activeList[idx].estado = estado; refreshCounts(); renderActive(); }
 }
 
 async function buyProduct(id, prod) {
-  // Animate immediately
   const card = qs(`.product-card[data-id="${id}"]`, appContent);
   if (card) card.classList.add('removing');
   toast(`✓ ${prod.nombre} comprado`);
-
-  // DB update after animation
   setTimeout(async () => {
     const { error } = await db
       .from('productos')
       .update({ estado: 'Hay', comprado_en: new Date().toISOString() })
       .eq('id', id);
-
     if (error) { toast('Error al guardar ❌'); renderActive(); return; }
-
     const idx = activeList.findIndex(p => p.id === id);
     if (idx !== -1) activeList.splice(idx, 1);
     refreshCounts();
@@ -1044,56 +623,38 @@ async function buyProduct(id, prod) {
   }, 290);
 }
 
-// ════════════════════════════════════════════
-//  REALTIME
-//  Requires Realtime enabled for table
-//  "productos" in Supabase dashboard →
-//  Database → Replication
-// ════════════════════════════════════════════
+// REALTIME
 function setupRealtime() {
   if (realtimeCh) db.removeChannel(realtimeCh);
-
   realtimeCh = db
     .channel('productos-rt')
-    .on('postgres_changes', {
-      event: '*', schema: 'public', table: 'productos'
-    }, handleRT)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'productos' }, handleRT)
     .subscribe();
 }
 
 function handleRT({ eventType, new: nr, old: or }) {
   if (eventType === 'INSERT') {
     if (nr.estado === 'Falta' || nr.estado === 'Asignado') {
-      activeList.push(nr);
-      refreshCounts();
-      renderActive();
+      activeList.push(nr); refreshCounts(); renderActive();
     }
   }
-
   if (eventType === 'UPDATE') {
     const idx = activeList.findIndex(p => p.id === nr.id);
     if (nr.estado === 'Falta' || nr.estado === 'Asignado') {
-      if (idx !== -1) activeList[idx] = nr;
-      else            activeList.push(nr);
+      if (idx !== -1) activeList[idx] = nr; else activeList.push(nr);
     } else {
       if (idx !== -1) activeList.splice(idx, 1);
     }
-    refreshCounts();
-    renderActive();
-    // Also refresh sheet catalog if open
+    refreshCounts(); renderActive();
     if (sheet.classList.contains('open')) refreshCatalog();
   }
-
   if (eventType === 'DELETE') {
     const idx = activeList.findIndex(p => p.id === or.id);
     if (idx !== -1) { activeList.splice(idx, 1); refreshCounts(); renderActive(); }
   }
 }
 
-
-// ════════════════════════════════════════════
-//  TABS
-// ════════════════════════════════════════════
+// TABS
 qa('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     qa('.tab').forEach(t => t.classList.remove('active'));
@@ -1103,32 +664,22 @@ qa('.tab').forEach(tab => {
   });
 });
 
-
-// ════════════════════════════════════════════
-//  FAB + BOTTOM SHEET
-// ════════════════════════════════════════════
+// FAB + BOTTOM SHEET
 $('fab').addEventListener('click', openSheet);
 overlay.addEventListener('click', closeSheet);
 
 function openSheet() {
-  overlay.classList.add('open');
-  sheet.classList.add('open');
-  // Reset filters
-  searchEl.value = '';
-  sheetQuery     = '';
-  sheetFilter    = 'todos';
+  overlay.classList.add('open'); sheet.classList.add('open');
+  searchEl.value = ''; sheetQuery = ''; sheetFilter = 'todos';
   qa('.chip').forEach(c => c.classList.toggle('active', c.dataset.f === 'todos'));
   loadCatalog();
   setTimeout(() => searchEl.focus(), 320);
 }
 
 function closeSheet() {
-  overlay.classList.remove('open');
-  sheet.classList.remove('open');
-  searchEl.blur();
+  overlay.classList.remove('open'); sheet.classList.remove('open'); searchEl.blur();
 }
 
-// Chips inside sheet
 qa('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
     qa('.chip').forEach(c => c.classList.remove('active'));
@@ -1138,130 +689,97 @@ qa('.chip').forEach(chip => {
   });
 });
 
-// Search debounce
 searchEl.addEventListener('input', e => {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    sheetQuery = e.target.value.trim();
-    renderCatalog();
-  }, 200);
+  searchTimer = setTimeout(() => { sheetQuery = e.target.value.trim(); renderCatalog(); }, 200);
 });
 
-
-// ─── Catalog (products in Hay state) ────────
+// CATALOG
 async function loadCatalog() {
   sheetList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-
-  // Exclude products already in active list
   const activeIds = activeList.map(p => p.id);
-
-  let q = db
-    .from('productos')
-    .select('id, nombre, categoria, supermercado, cantidad')
-    .eq('estado', 'Hay')
-    .order('nombre')
-    .limit(300);
-
-  if (activeIds.length > 0) {
-    q = q.not('id', 'in', `(${activeIds.join(',')})`);
-  }
-
+  let q = db.from('productos').select('id, nombre, categoria, supermercado, cantidad')
+    .eq('estado', 'Hay').order('nombre').limit(300);
+  if (activeIds.length > 0) q = q.not('id', 'in', `(${activeIds.join(',')})`);
   const { data, error } = await q;
-
-  if (error) {
-    sheetList.innerHTML = '<div class="loading">Error al cargar. Intenta de nuevo.</div>';
-    return;
-  }
-
+  if (error) { sheetList.innerHTML = '<div class="loading">Error al cargar. Intenta de nuevo.</div>'; return; }
   catalog = data || [];
   renderCatalog();
 }
 
 function renderCatalog() {
   let list = catalog;
-
-  if (sheetFilter !== 'todos') {
-    list = list.filter(p => p.supermercado === sheetFilter);
-  }
-
+  if (sheetFilter !== 'todos') list = list.filter(p => p.supermercado === sheetFilter);
   if (sheetQuery) {
     const q = sheetQuery.toLowerCase();
-    list = list.filter(p =>
-      p.nombre.toLowerCase().includes(q) ||
-      (p.categoria || '').toLowerCase().includes(q)
-    );
+    list = list.filter(p => p.nombre.toLowerCase().includes(q) || (p.categoria || '').toLowerCase().includes(q));
   }
-
   if (list.length === 0) {
-    sheetList.innerHTML = `
-      <div class="empty" style="padding:40px 20px">
-        <div class="empty-icon" style="font-size:36px">🔍</div>
-        <p>Sin resultados.<br>Prueba otro término.</p>
-      </div>`;
+    sheetList.innerHTML = `<div class="empty" style="padding:40px 20px">
+      <div class="empty-icon" style="font-size:36px">🔍</div>
+      <p>Sin resultados.<br>Prueba otro término.</p></div>`;
     return;
   }
-
-  const iconMap = {
-    'Mercadona': ['🟢', 'icon-mercadona'],
-    'Ahorramás':  ['🔴', 'icon-ahoramas'],
-    'ALDI':      ['🔵', 'icon-aldi'],
-  };
-
+  const iconMap = { 'Mercadona': ['🟢','icon-mercadona'], 'Ahorramás': ['🔴','icon-ahoramas'], 'ALDI': ['🔵','icon-aldi'] };
   sheetList.innerHTML = list.map(p => {
-    const [icon, iconCls] = iconMap[p.supermercado] || ['🛒', 'icon-other'];
+    const [icon, iconCls] = iconMap[p.supermercado] || ['🛒','icon-other'];
     const sub = [p.supermercado, p.categoria].filter(Boolean).join(' · ');
-    return `
-      <div class="sheet-item" data-id="${p.id}">
-        <div class="sheet-item-icon ${iconCls}">${icon}</div>
-        <div class="sheet-item-info">
-          <div class="sheet-item-name">${p.nombre}</div>
-          <div class="sheet-item-sub">${sub}</div>
-        </div>
-        <button class="btn-add" data-id="${p.id}">+ Añadir</button>
-      </div>`;
+    return `<div class="sheet-item" data-id="${p.id}">
+      <div class="sheet-item-icon ${iconCls}">${icon}</div>
+      <div class="sheet-item-info">
+        <div class="sheet-item-name">${p.nombre}</div>
+        <div class="sheet-item-sub">${sub}</div>
+      </div>
+      <button class="btn-add" data-id="${p.id}">+ Añadir</button>
+    </div>`;
   }).join('');
-
-  // Bind clicks — item row OR button
   qa('.sheet-item', sheetList).forEach(item => {
-    item.addEventListener('click', e => {
-      const id = Number(item.dataset.id);
-      addToActive(id);
-    });
+    item.addEventListener('click', () => addToActive(Number(item.dataset.id)));
   });
 }
 
 async function addToActive(id) {
   const prod = catalog.find(p => p.id === id);
   if (!prod) return;
-
-  // Actualización local INMEDIATA (antes de la llamada a la BD)
   catalog = catalog.filter(p => p.id !== id);
   activeList.push({ ...prod, estado: 'Falta' });
-  refreshCounts();
-  renderActive();
-  renderCatalog();
+  refreshCounts(); renderActive(); renderCatalog();
   toast(`✓ ${prod.nombre} añadido`);
-
-  const { error } = await db
-    .from('productos')
-    .update({ estado: 'Falta' })
-    .eq('id', id);
-
+  const { error } = await db.from('productos').update({ estado: 'Falta' }).eq('id', id);
   if (error) {
-    // Rollback si falla la BD
     toast('Error al añadir ❌');
     catalog.push(prod);
     const idx = activeList.findIndex(p => p.id === id);
     if (idx !== -1) activeList.splice(idx, 1);
-    refreshCounts();
-    renderActive();
-    renderCatalog();
+    refreshCounts(); renderActive(); renderCatalog();
   }
 }
 
-// ════════════════════════════════════════════
-//  TOAST
-// ════════════════════════════════════════════
+function refreshCatalog() {
+  const activeIds = new Set(activeList.map(p => p.id));
+  catalog = catalog.filter(p => !activeIds.has(p.id));
+  renderCatalog();
+}
+
+// CICLO DE SUPERMERCADO
+async function cycleSupermarket(id) {
+  const cycle = ['Mercadona', 'Ahorramás', 'ALDI'];
+  const prod  = activeList.find(p => p.id === id);
+  if (!prod) return;
+  const currentIdx = cycle.indexOf(prod.supermercado);
+  const nextSuper  = cycle[(currentIdx + 1) % cycle.length];
+  const { error } = await db
+    .from('productos')
+    .update({ supermercado: nextSuper })
+    .eq('id', id);
+  if (error) { toast('Error al cambiar ❌'); return; }
+  activeList[activeList.findIndex(p => p.id === id)].supermercado = nextSuper;
+  refreshCounts();
+  renderActive();
+  toast(`Cambiado a ${nextSuper}`);
+}
+
+// TOAST
 let toastTimer;
 function toast(msg) {
   clearTimeout(toastTimer);
