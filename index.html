@@ -264,6 +264,14 @@
       transition: transform .15s, box-shadow .15s;
     }
     .fab:active { transform: scale(.9); box-shadow: 0 2px 8px rgba(34,197,94,.4); }
+	.fab-assign {
+	  right: 86px;
+	  font-size: 22px;
+	  background: #1E293B;
+	  color: #F1F5F9;
+	  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+	}
+	.fab-assign:active { box-shadow: 0 2px 8px rgba(0,0,0,.3); }
 
     /* BOTTOM SHEET */
     .overlay {
@@ -404,6 +412,7 @@
   <main class="app-content" id="app-content">
     <div class="loading"><div class="spinner"></div>Cargando…</div>
   </main>
+  <button class="fab fab-assign" id="fab-assign" aria-label="Asignar todos a tienda">🏪</button>
   <button class="fab" id="fab" aria-label="Añadir a la lista">+</button>
 </div>
 
@@ -761,6 +770,79 @@ function refreshCatalog() {
   renderCatalog();
 }
 
+// ASIGNAR TODOS LOS FALTA A UNA TIENDA
+$('fab-assign').addEventListener('click', showAssignPicker);
+
+function showAssignPicker() {
+  const faltas = activeList.filter(p => p.estado === 'Falta');
+  if (faltas.length === 0) { toast('No hay productos en Falta'); return; }
+
+  const existing = document.querySelector('.assign-picker');
+  if (existing) { existing.remove(); return; }
+
+  const picker = document.createElement('div');
+  picker.className = 'assign-picker';
+  picker.style.cssText = `
+    position:fixed; bottom:90px; right:80px;
+    background:#1E293B; border-radius:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.3);
+    z-index:500; overflow:hidden; min-width:160px;`;
+
+  const options = [
+    { value: 'Mercadona', icon: '🟢' },
+    { value: 'Ahorramás', icon: '🔴' },
+    { value: 'ALDI',      icon: '🔵' }
+  ];
+
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `
+      display:flex; align-items:center; gap:10px;
+      width:100%; padding:14px 16px;
+      background:transparent; border:none;
+      border-bottom:1px solid #334155;
+      color:#F1F5F9; font-size:14px; font-weight:500;
+      font-family:inherit; cursor:pointer; text-align:left;`;
+    btn.innerHTML = `<span>${opt.icon}</span>${opt.value}`;
+    btn.addEventListener('click', () => {
+      picker.remove();
+      assignAllFalta(opt.value);
+    });
+    picker.appendChild(btn);
+  });
+
+  picker.lastChild.style.borderBottom = 'none';
+  document.body.appendChild(picker);
+  setTimeout(() => {
+    document.addEventListener('click', () => picker.remove(), { once: true });
+  }, 50);
+}
+
+async function assignAllFalta(supermercado) {
+  const faltas = activeList.filter(p => p.estado === 'Falta');
+  if (faltas.length === 0) return;
+
+  const ids = faltas.map(p => p.id);
+
+  const { error } = await db
+    .from('productos')
+    .update({ estado: 'Asignado', supermercado })
+    .in('id', ids);
+
+  if (error) { toast('Error al asignar ❌'); return; }
+
+  ids.forEach(id => {
+    const idx = activeList.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      activeList[idx].estado = 'Asignado';
+      activeList[idx].supermercado = supermercado;
+    }
+  });
+
+  refreshCounts();
+  renderActive();
+  toast(`${faltas.length} productos asignados a ${supermercado}`);
+}
 // CICLO DE SUPERMERCADO
 async function cycleSupermarket(id) {
   const cycle = ['Mercadona', 'Ahorramás', 'ALDI'];
